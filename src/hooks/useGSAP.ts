@@ -1,7 +1,8 @@
 import {gsap} from 'gsap';
+// @ts-ignore
 import {ScrollTrigger} from 'gsap/ScrollTrigger.js';
 
-import * as Types from '@types/useGSAP';
+import * as Types from '../types/useGSAP';
 
 gsap.registerPlugin(ScrollTrigger);
 

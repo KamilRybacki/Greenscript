@@ -24,11 +24,19 @@ const getGSAPHandle = (
 };
 
 const prepareTargetsList = (targets: Types.PossibleAnimationTarget | Types.PossibleAnimationTarget[]) => {
-  if (typeof targets === 'string') return [document.querySelector(targets)];
+  if (typeof targets === 'string') {
+    const queryFromDOM: HTMLElement | null = document.querySelector(targets);
+    if (queryFromDOM) return [document.querySelector(targets)];
+    console.error(`No matching elements found for selector: ${targets}`);
+    return [];
+  }
   if (targets instanceof HTMLElement) return [targets];
   if (targets instanceof Array) {
     return targets.reduce((targetsList: Types.PossibleAnimationTarget[], target: Types.PossibleAnimationTarget) => {
-      if (typeof target === 'string') targetsList.push(document.querySelector(target));
+      if (typeof target === 'string') {
+        const queryFromDOM: HTMLElement | null = document.querySelector(target);
+        if (queryFromDOM) targetsList.push(queryFromDOM);
+      }
       if (target instanceof HTMLElement) targetsList.push(target);
       return targetsList;
     }, []);
@@ -49,9 +57,10 @@ const useGSAP = (
             const targetsList = prepareTargetsList(targets);
             if (targetsList) {
               const handle = getGSAPHandle(currentTimeline, type);
-              targetsList.forEach((targetElement: HTMLElement) => {
+              targetsList.forEach((targetElement) => {
                 handle(targetElement, ...Object.values(coreOptions));
               });
+              return targetsList;
             }
           };
         }
@@ -74,7 +83,13 @@ const useGSAP = (
       });
   animationInterface['startAll'] = () => {
     const availableHandles: Array<CallableFunction> = Object.values<CallableFunction>(animationInterface).slice(1, -1);
-    availableHandles.forEach((handle: CallableFunction) => handle());
+    return availableHandles.reduce((
+        handlesResults: {[key: string]: string[]},
+        handle: CallableFunction,
+    ) => {
+      handlesResults[handle.name] = handle();
+      return handlesResults;
+    }, {});
   };
   return animationInterface;
 };

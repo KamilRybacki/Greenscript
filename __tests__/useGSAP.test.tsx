@@ -1,40 +1,36 @@
 /* eslint-disable require-jsdoc */
-import useGSAP from '../src/hooks/useGSAP';
+import renderTestElement from '../__mocks__/TestComponent';
+import {testElementInnerHTML} from '../__mocks__/TestComponent';
 
-import * as Utils from './utils';
-import renderTestElement from './TestComponent';
+export const isItAnAnimatonFunction = (input: CallableFunction | null) => {
+  const sourceCode = input?.toString();
+  return sourceCode ? input &&
+    (input instanceof Function) &&
+    (sourceCode.includes('getGSAPHandle') || sourceCode.includes('availableHandles.reduce')) : false;
+};
 
 describe('Test common GSAP handles', () => {
   ['from', 'to', 'fromTo', 'set'].forEach((handleName: string) => {
     test(handleName, () => {
-      const target = renderTestElement();
-      const animation = Utils.testAnimations[handleName];
-      animation.targets = `#${target}`;
-      const testInterface = useGSAP(
-          Utils.testTimelineOptions,
-          [animation, {
-            name: 'dummy',
-            type: 'to',
-            targets: `#${target}`,
-            vars: {
-              opacity: 0.33,
-            },
-          }],
-      );
+      const [renderedElement, testInterface] = renderTestElement(handleName);
+      expect(renderedElement.innerHTML).toEqual(testElementInnerHTML);
 
       const generatedFunction = testInterface[`${handleName}Test`];
-      const animationFunctionIsValid = Utils.isItAnAnimatonFunction(generatedFunction);
-      const interfaceHasStartAllHandle = Utils.isItAnAnimatonFunction(testInterface.startAll);
+      expect([
+        isItAnAnimatonFunction(generatedFunction),
+        isItAnAnimatonFunction(testInterface.startAll),
+      ]).not.toContain(false);
 
-      expect(animationFunctionIsValid).toBeTruthy();
-      expect(interfaceHasStartAllHandle).toBeTruthy();
+      const testTimeline = testInterface.getTimeline();
+      const timelineLastStep = testTimeline._last.vars;
+      const timelineFirstStep = testTimeline._first.vars;
 
-      const animatedElement = generatedFunction()[0];
-      console.log(animatedElement.style);
+      expect([
+        timelineFirstStep.opacity === 0.25,
+        timelineLastStep.opacity === 0.33,
+      ]).not.toContain(false);
 
-      document.querySelector(`#${target}`).remove();
+      renderedElement.remove();
     });
   });
 });
-
-

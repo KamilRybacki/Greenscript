@@ -45,9 +45,11 @@ const prepareTargetsList = (targets: Types.PossibleAnimationTarget | Types.Possi
 
 const useGSAP = (
     timelineOptions: gsap.TimelineVars,
+    id: string,
     animations: Types.AnimationStep[]): Types.AnimationsInterface => {
   const currentTimeline = gsap.timeline(timelineOptions);
   currentTimeline.addLabel('date', Date.now().toString());
+  currentTimeline.addLabel('timelineID', id);
   const animationInterface: Types.AnimationsInterface = animations.reduce(
       (outputInterface: Types.AnimationsInterface, step: Types.AnimationStep,
       ) => {
@@ -66,6 +68,7 @@ const useGSAP = (
         }
         return outputInterface;
       }, {
+        'getTimeline': () => currentTimeline,
         'setup': (
             targets: gsap.TweenTarget | Array<string>,
             vars: gsap.TweenVars,
@@ -82,7 +85,7 @@ const useGSAP = (
         },
       });
   animationInterface['startAll'] = () => {
-    const availableHandles: Array<CallableFunction> = Object.values<CallableFunction>(animationInterface).slice(1, -1);
+    const availableHandles: Array<CallableFunction> = Object.values<CallableFunction>(animationInterface).slice(2, -1);
     return availableHandles.reduce((
         handlesResults: {[key: string]: string[]},
         handle: CallableFunction,

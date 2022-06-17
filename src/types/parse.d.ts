@@ -1,7 +1,18 @@
 import {gsap} from 'gsap';
 
+export type TranspileCache = {
+  lastTarget: string,
+  lastHandle: string
+};
+
 export type ScriptLineData = {
-  _source: string,
+  source: string,
   type: string,
-  data: gsap.TimelineVars | gsap.AnimationVars,
+  sections: LineSectionData[],
+};
+
+export type LineSectionData = {
+  source: string,
+  sectionType: string,
+  vars?: gsap.AnimationVars | gsap.TimelineVars,
 };

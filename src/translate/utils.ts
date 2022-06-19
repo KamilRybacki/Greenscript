@@ -1,12 +1,17 @@
-import * as Types from '../types/utils';
+import * as Types from '../types';
 
-export const specialCharacters: Types.CharactersMapping = {
+export const linePrefixCharacters: Types.Utils.CharactersMapping = {
+  '[': 'timeline',
+  '>': 'step',
+};
+
+export const sectionPrefixCharacters: Types.Utils.CharactersMapping = {
   '[': 'target',
   '>': 'step',
   '(': 'options',
 };
 
-export const sectionClosingCharacters: Types.CharactersMapping = {
+export const sectionClosingCharacters: Types.Utils.CharactersMapping = {
   '[': ']',
   '(': ')',
   '>': '[',
@@ -14,8 +19,15 @@ export const sectionClosingCharacters: Types.CharactersMapping = {
 
 export const specialCharactersRegexp: RegExp = RegExp(
     `${
-      Object.keys(specialCharacters).map((char: string) => {
+      Object.keys(sectionPrefixCharacters).map((char: string) => {
         return '\\' + char;
       }).join('|')
     }`, 'g',
 );
+
+export const optionsKeys: Types.Utils.OptionKeysMapping = {
+  'o': 'opacity',
+  'r': 'rotate',
+  'x': 'x',
+  'y': 'y',
+};

@@ -1,10 +1,10 @@
-import * as Types from '../types/parse';
+import * as Types from '../types';
 import * as Utils from './utils';
 
-export const parseGSAPScript = (script: string): Types.ScriptLineData[] => {
+export const parseGSAPScript = (script: string): Types.Parse.ScriptLineData[] => {
   return script
       .split('\n')
-      .reduce((readLines: Types.ScriptLineData[], line: string) => {
+      .reduce((readLines: Types.Parse.ScriptLineData[], line: string) => {
         readLines.push({
           source: line.trim(),
           type: '',
@@ -12,12 +12,12 @@ export const parseGSAPScript = (script: string): Types.ScriptLineData[] => {
         });
         return readLines;
       }, [])
-      .filter((lineData: Types.ScriptLineData) => lineData.source)
-      .map((line: Types.ScriptLineData): Types.ScriptLineData => parseScriptLine(line))
-      .filter((line: Types.ScriptLineData) => line.type);
+      .filter((lineData: Types.Parse.ScriptLineData) => lineData.source)
+      .map((line: Types.Parse.ScriptLineData): Types.Parse.ScriptLineData => parseScriptLine(line))
+      .filter((line: Types.Parse.ScriptLineData) => line.type);
 };
 
-const parseScriptLine = (line: Types.ScriptLineData): Types.ScriptLineData => {
+export const parseScriptLine = (line: Types.Parse.ScriptLineData): Types.Parse.ScriptLineData => {
   line.type = determineLineType(line.source);
   if (line.type) splitLineIntoSections(line);
   return line;
@@ -25,18 +25,18 @@ const parseScriptLine = (line: Types.ScriptLineData): Types.ScriptLineData => {
 
 const determineLineType = (lineSource: string): string => {
   const firstCharacterInLine = lineSource.charAt(0);
-  const recognizedCharacters = Object.keys(Utils.specialCharacters);
+  const recognizedCharacters = Object.keys(Utils.linePrefixCharacters);
   return recognizedCharacters.includes(firstCharacterInLine) ?
-  Utils.specialCharacters[firstCharacterInLine] : '';
+  Utils.linePrefixCharacters[firstCharacterInLine] : '';
 };
 
-const splitLineIntoSections = (lineData: Types.ScriptLineData) => {
+const splitLineIntoSections = (lineData: Types.Parse.ScriptLineData) => {
   let match: RegExpMatchArray | null;
   while (
     (match = Utils.specialCharactersRegexp.exec(lineData.source))
   ) {
     const matchedCharacter = match.toString();
-    const characterTag = Utils.specialCharacters[matchedCharacter];
+    const characterTag = Utils.sectionPrefixCharacters[matchedCharacter];
     const closingCharacter = Utils.sectionClosingCharacters[matchedCharacter];
     if (closingCharacter) {
       const sectionSource = getSectionSource(lineData.source, match.index, closingCharacter);

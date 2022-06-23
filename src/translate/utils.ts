@@ -26,8 +26,12 @@ export const specialCharactersRegexp: RegExp = RegExp(
 );
 
 export const optionsKeys: Types.Utils.OptionKeysMapping = {
-  'o': 'opacity',
-  'r': 'rotate',
-  'x': 'x',
-  'y': 'y',
+  'o': 'step:opacity',
+  'r': 'step:rotate',
+  'x': 'step:x',
+  'y': 'step:y',
+  't': 'step:duration',
+  'd': 'step:delay',
+  'dd': 'defaults:delay',
+  'dt': 'defaults:duration',
 };

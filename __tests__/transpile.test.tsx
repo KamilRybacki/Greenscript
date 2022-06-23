@@ -41,11 +41,17 @@ describe('Test compiler', () => {
     const transpiledLine = Compile.transpileLine(parsedSource[2]);
     expect(transpiledLine).toStrictEqual(Mocks.expectedTranspiledLine);
   });
-  test('Compile line to GSAP function without declaring timeline', () => {
+  test('Compile line with timeline declaration', () => {
+    const compileLineWithTimelineDeclaration = Compile.compileLine(parsedSource[0]);
+    expect(compileLineWithTimelineDeclaration).toBe(Mocks.expectedTimelineDeclaration)
+    console.log(compileLineWithTimelineDeclaration);
+  });
+  test('Compile step line to GSAP function without declaring timeline', () => {
+    window.localStorage.setItem('currentTimeline', '');
     const compiledLineWithoutTimeline = Compile.compileLine(parsedSource[2]);
     expect(compiledLineWithoutTimeline).toEqual(Mocks.expectedCompiledLineWithoutTimeline);
   });
-  test('Compile line to GSAP function for declared timeline', () => {
+  test('Compile step line to GSAP function for declared timeline', () => {
     window.localStorage.setItem('currentTimeline', 'testTimeline');
     const compiledLineWithTimeline = Compile.compileLine(parsedSource[3]);
     expect(compiledLineWithTimeline).toEqual(Mocks.expectedCompiledLineWithTimeline);

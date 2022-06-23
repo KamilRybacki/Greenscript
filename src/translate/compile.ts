@@ -1,6 +1,10 @@
 import * as Types from '../types';
 import * as Utils from './utils';
 
+export const compileScript = (script: Types.Parse.ScriptLineData[]) => {
+  return script.map((line: Types.Parse.ScriptLineData) => compileLine(line));
+};
+
 export const compileLine = (lineData: Types.Parse.ScriptLineData) => {
   const {target, handleType, options} = transpileLine(lineData);
   switch (lineData.type) {
@@ -20,8 +24,7 @@ export const transpileLine = (lineData: Types.Parse.ScriptLineData) => {
     if (section.sectionType === 'options') {
       if (!codeMap[section.sectionType]) {
         codeMap[section.sectionType] = transpileOptions(section.source);
-      }
-      else {
+      } else {
         codeMap[section.sectionType] = `${codeMap[section.sectionType]}, ${transpileOptions(section.source)}`;
       }
     } else codeMap[section.sectionType] = section.source;
@@ -37,8 +40,23 @@ export const transpileOptions = (sectionOptions: string): string => {
           optionSource: string,
       ) => {
         const [optionKey, optionValue] = optionSource.split('=');
-        const expandedOptionKey = Utils.optionsKeys[optionKey.trim()];
-        if (expandedOptionKey) transpiledOptions[expandedOptionKey] = optionValue;
+        const mappedOptionKey = Utils.optionsKeys[optionKey.trim()];
+        const [keyPrefix, actualKey] = mappedOptionKey.split(':');
+        switch (keyPrefix) {
+          case 'step':
+            transpiledOptions[actualKey] = optionValue;
+            break;
+          case 'timeline':
+            transpiledOptions[actualKey] = optionValue;
+            break;
+          case 'defaults':
+            if (transpiledOptions.defaults === undefined) {
+              transpiledOptions.defaults = {};
+            }
+            transpiledOptions.defaults[actualKey] = optionValue;
+          default:
+            break;
+        }
         return transpiledOptions;
       }, {});
   return JSON.stringify(transpiledOptions);

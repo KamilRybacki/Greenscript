@@ -4,5 +4,5 @@ export type CharactersMapping = {
 };
 
 export type OptionKeysMapping = {
-  [key: string]: string;
+  [key: string]: string
 };

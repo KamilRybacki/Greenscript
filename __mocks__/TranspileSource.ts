@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 
 export const simpleSource = `
-  [Test](t=1, d=0.25)
+  [Test](t=1, d=0.25, dt=2, dd=0.5)
   >from[#firstTarget](o=0, x=10)
   >to[#firstTarget](o=0.5, y=-20, x=2)
   >fromTo[#secondTarget](o=0.25, r=15)(o=0, r=45)
@@ -26,6 +26,8 @@ export const expectedTranspiledLine = {
   target: '#firstTarget',
   options: '{"opacity":"0.5","y":"-20","x":"2"}',
 };
+
+export const expectedTimelineDeclaration = 'const Test = gsap.timeline({"duration":"1","delay":"0.25","defaults":{"duration":"2","delay":"0.5"}});';
 
 export const expectedCompiledLineWithoutTimeline = 'gsap.globalTimeline.to(#firstTarget, {"opacity":"0.5","y":"-20","x":"2"});';
 

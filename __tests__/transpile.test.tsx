@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import * as Parse from '../src/hooks/translate/parse';
-import * as Compile from '../src/hooks/translate/compile';
+import * as Parse from '../src/translation/parse';
+import * as Compile from '../src/translation/compile';
 import * as Mocks from '../__mocks__/TranspileSource';
 
 // @ts-ignore
@@ -54,7 +54,6 @@ describe('Test compiler', () => {
 
 test('Parse and compile whole script', () => {
   const parsedFinalScript = Parse.parseGSAPScript(Mocks.finalSource);
-  console.log(parsedFinalScript);
   const compiledFinalScript = Compile.compileGSAPScript(parsedFinalScript);
-  console.log(compiledFinalScript);
+  expect(compiledFinalScript).toStrictEqual(Mocks.expectedCompiledFinalScript);
 });

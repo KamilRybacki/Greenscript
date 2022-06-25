@@ -58,3 +58,47 @@ export const finalSource = `
   >set[#fourthTarget](y=400)
   >to[#fourthTarget](o=0.5, y=-20, x=2)
 `;
+
+export const expectedCompiledFinalScript = {
+  options: {
+    delay: '1.5',
+    defaults: {delay: '0.25'},
+  },
+  animations: [
+    {
+      targets: ['#firstTarget', '#thirdTarget'],
+      type: 'fromTo',
+      vars: [{
+        rotate: '0',
+      }, {
+        rotate: '30',
+      }],
+    },
+    {
+      targets: ['#secondTarget'],
+      type: 'fromTo',
+      vars: [{
+        opacity: '0.25',
+        x: '-200',
+      }, {
+        opacity: '0.5',
+        x: '200',
+      }],
+    },
+    {
+      targets: ['#firstTarget'],
+      type: 'to',
+      vars: {x: '200', y: '300'},
+    },
+    {
+      targets: ['#fourthTarget'],
+      type: 'set',
+      vars: {y: '400'},
+    },
+    {
+      targets: ['#fourthTarget'],
+      type: 'to',
+      vars: {opacity: '0.5', y: '-20', x: '2'},
+    },
+  ]
+};

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import * as Parse from '../src/translate/parse';
-import * as Compile from '../src/translate/compile';
+import * as Parse from '../src/hooks/translate/parse';
+import * as Compile from '../src/hooks/translate/compile';
 import * as Mocks from '../__mocks__/TranspileSource';
 
 // @ts-ignore
@@ -35,7 +35,7 @@ describe('Test compiler', () => {
   test('Transpile section options', () => {
     const mockOptions = Mocks.expectedSectionsData[2].source;
     const transpiledMockOptions = Compile.transpileOptions(mockOptions);
-    expect(transpiledMockOptions).toEqual(Mocks.expectedTranspiledOptions);
+    expect(transpiledMockOptions).toStrictEqual(Mocks.expectedTranspiledOptions);
   });
   test('Transpile line data', () => {
     const transpiledLine = Compile.transpileLine(parsedSource[2]);
@@ -43,17 +43,18 @@ describe('Test compiler', () => {
   });
   test('Compile line with timeline declaration', () => {
     const compileLineWithTimelineDeclaration = Compile.compileLine(parsedSource[0]);
-    expect(compileLineWithTimelineDeclaration).toBe(Mocks.expectedTimelineDeclaration)
-    console.log(compileLineWithTimelineDeclaration);
+    expect(compileLineWithTimelineDeclaration).toStrictEqual(Mocks.expectedTimelineDeclaration);
   });
   test('Compile step line to GSAP function without declaring timeline', () => {
     window.localStorage.setItem('currentTimeline', '');
-    const compiledLineWithoutTimeline = Compile.compileLine(parsedSource[2]);
-    expect(compiledLineWithoutTimeline).toEqual(Mocks.expectedCompiledLineWithoutTimeline);
+    const compiledStepLine = Compile.compileLine(parsedSource[3]);
+    expect(compiledStepLine).toStrictEqual(Mocks.expectedCompiledStepLine);
   });
-  test('Compile step line to GSAP function for declared timeline', () => {
-    window.localStorage.setItem('currentTimeline', 'testTimeline');
-    const compiledLineWithTimeline = Compile.compileLine(parsedSource[3]);
-    expect(compiledLineWithTimeline).toEqual(Mocks.expectedCompiledLineWithTimeline);
-  });
+});
+
+test('Parse and compile whole script', () => {
+  const parsedFinalScript = Parse.parseGSAPScript(Mocks.finalSource);
+  console.log(parsedFinalScript);
+  const compiledFinalScript = Compile.compileGSAPScript(parsedFinalScript);
+  console.log(compiledFinalScript);
 });

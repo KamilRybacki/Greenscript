@@ -8,19 +8,19 @@ gsap.registerPlugin(ScrollTrigger);
 
 const getGSAPHandle = (
     timeline: gsap.core.Timeline,
-    handleType: string,
+    type: string,
 ): CallableFunction => {
   const timelinePrototype = Object.getPrototypeOf(timeline);
   const availableHandles = Object.keys(timelinePrototype);
-  if (availableHandles.includes(handleType)) {
+  if (availableHandles.includes(type)) {
     return (target: HTMLElement, vars: gsap.AnimationVars) => {
       if (vars instanceof Array) {
-        return timeline[handleType](target, ...vars);
+        return timeline[type](target, ...vars);
       }
-      return timeline[handleType](target, vars);
+      return timeline[type](target, vars);
     };
   }
-  return () => console.error(`Invalid animation type: ${handleType}`);
+  return () => console.error(`Invalid animation type: ${type}`);
 };
 
 const prepareTargetsList = (targets: Types.PossibleAnimationTarget | Types.PossibleAnimationTarget[]) => {

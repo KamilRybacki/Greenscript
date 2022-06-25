@@ -6,7 +6,7 @@ export const linePrefixCharacters: Types.Utils.CharactersMapping = {
 };
 
 export const sectionPrefixCharacters: Types.Utils.CharactersMapping = {
-  '[': 'target',
+  '[': 'targets',
   '>': 'step',
   '(': 'options',
 };

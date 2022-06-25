@@ -42,7 +42,7 @@ const splitLineIntoSections = (lineData: Types.Parse.ScriptLineData) => {
       const sectionSource = getSectionSource(lineData.source, match.index, closingCharacter);
       lineData.sections.push({
         source: sectionSource,
-        sectionType: characterTag === 'step' ? 'handleType' : characterTag,
+        sectionType: characterTag === 'step' ? 'type' : characterTag,
       });
     };
   }

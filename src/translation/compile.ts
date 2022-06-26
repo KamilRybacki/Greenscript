@@ -24,40 +24,49 @@ export const compileGSAPScript = (script: Types.Parse.ScriptLineData[]) => {
 export const compileLine = (
     lineData: Types.Parse.ScriptLineData,
 ): Types.Compile.CompiledLine => {
-  const {targets, type, options} = transpileLine(lineData);
+  const transpiledLine = transpileLine(lineData);
   switch (lineData.type) {
     case 'timeline':
-      window.localStorage.setItem('currentTimeline', targets.toString());
-      return {
-        timelineOptions: options,
+      if (transpiledLine.targets !== undefined) {
+        window.localStorage.setItem('currentTimeline', transpiledLine.targets.toString());
+        return {
+          timelineOptions: transpiledLine.options,
+        };
       };
     case 'step':
       return {
-        targets: targets,
-        type: type,
-        vars: options,
+        targets: transpiledLine.targets,
+        type: transpiledLine.type,
+        vars: transpiledLine.options,
       };
     default:
       return {};
   }
 };
 
-export const transpileLine = (lineData: Types.Parse.ScriptLineData) => {
-  return lineData.sections.reduce((codeMap: Types.Compile.CodeMapping, section: Types.Parse.LineSectionData) => {
-    const source = section.source;
-    if (section.sectionType === 'options') {
-      if (!codeMap[section.sectionType]) {
-        codeMap[section.sectionType] = transpileOptions(source);
-      } else {
-        codeMap[section.sectionType] = [codeMap[section.sectionType], transpileOptions(source)];
-      }
-    } else {
-      codeMap[section.sectionType] = source.includes('#') ?
-        source.split(',').map((target: string) => target.trim()) :
-        source;
-    }
-    return codeMap;
-  }, {});
+export const transpileLine = (lineData: Types.Parse.ScriptLineData): Types.Compile.TranspiledLine => {
+  return lineData.sections.reduce(
+      (transpiledLine: Types.Compile.TranspiledLine,
+          section: Types.Parse.LineSectionData,
+      ) => {
+        const type: string = section.sectionType;
+        switch (type) {
+          case 'targets':
+            transpiledLine[type] = section.source.split(',').map((target: string) => target.trim());
+            break;
+          case 'options':
+            transpiledLine[type].push(transpileOptions(section.source));
+            break;
+          case 'type':
+            transpiledLine[type] = section.source;
+          default:
+            break;
+        }
+        return transpiledLine;
+      }, {
+        targets: [],
+        options: [],
+      });
 };
 
 export const transpileOptions = (sectionOptions: string): Types.Compile.TranspiledSectionOptions => {

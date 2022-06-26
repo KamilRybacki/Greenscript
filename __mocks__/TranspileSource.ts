@@ -24,18 +24,18 @@ export const expectedTranspiledOptions = {opacity: '0', x: '10'};
 export const expectedTranspiledLine = {
   type: 'to',
   targets: ['#firstTarget'],
-  options: {opacity: '0.5', y: '-20', x: '2'},
+  options: [{opacity: '0.5', y: '-20', x: '2'}],
 };
 
 export const expectedTimelineDeclaration = {
-  timelineOptions: {
+  timelineOptions: [{
     duration: '1',
     delay: '0.25',
     defaults: {
       duration: '2',
       delay: '0.5',
     },
-  },
+  }],
 };
 
 export const expectedCompiledStepLine = {
@@ -60,10 +60,10 @@ export const finalSource = `
 `;
 
 export const expectedCompiledFinalScript = {
-  options: {
+  options: [{
     delay: '1.5',
     defaults: {delay: '0.25'},
-  },
+  }],
   animations: [
     {
       targets: ['#firstTarget', '#thirdTarget'],
@@ -88,17 +88,17 @@ export const expectedCompiledFinalScript = {
     {
       targets: ['#firstTarget'],
       type: 'to',
-      vars: {x: '200', y: '300'},
+      vars: [{x: '200', y: '300'}],
     },
     {
       targets: ['#fourthTarget'],
       type: 'set',
-      vars: {y: '400'},
+      vars: [{y: '400'}],
     },
     {
       targets: ['#fourthTarget'],
       type: 'to',
-      vars: {opacity: '0.5', y: '-20', x: '2'},
+      vars: [{opacity: '0.5', y: '-20', x: '2'}],
     },
   ]
 };

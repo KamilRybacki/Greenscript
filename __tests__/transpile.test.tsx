@@ -55,5 +55,6 @@ describe('Test compiler', () => {
 test('Parse and compile whole script', () => {
   const parsedFinalScript = Parse.parseGSAPScript(Mocks.finalSource);
   const compiledFinalScript = Compile.compileGSAPScript(parsedFinalScript);
+  console.log(compiledFinalScript)
   expect(compiledFinalScript).toStrictEqual(Mocks.expectedCompiledFinalScript);
 });

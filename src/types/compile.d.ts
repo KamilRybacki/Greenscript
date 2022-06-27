@@ -1,12 +1,12 @@
 import {gsap} from 'gsap';
 
-export type TranspiledLine = {
+export type PrecompiledLine = {
   targets: string[],
-  options: TranspiledSectionOptions[],
+  options: TranslatedSectionOptions[],
   type: string,
 };
 
-export type TranspiledSectionOptions = gsap.AnimationVars | gsap.TimelineVars;
+export type TranslatedSectionOptions = gsap.AnimationVars | gsap.TimelineVars;
 
 export type CompiledTimeline = {
   timelineOptions: gsap.TimelineVars,

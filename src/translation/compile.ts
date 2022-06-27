@@ -1,7 +1,7 @@
 import * as Types from '../types';
 import * as Utils from './utils';
 
-export const compileGSAPScript = (script: Types.Parse.ScriptLineData[]) => {
+export const compileGreenscript = (script: Types.Parse.ScriptLineData[]) => {
   return script
       .map((line: Types.Parse.ScriptLineData) => compileLine(line))
       .reduce(
@@ -20,20 +20,20 @@ export const compileGSAPScript = (script: Types.Parse.ScriptLineData[]) => {
 export const compileLine = (
     lineData: Types.Parse.ScriptLineData,
 ): Types.Compile.CompiledTimeline | Types.Compile.CompiledAnimation => {
-  const transpiledLine = transpileLine(lineData);
+  const precompiledLineSource = precompileLine(lineData);
   switch (lineData.type) {
     case 'timeline':
-      if (transpiledLine.targets !== undefined) {
-        window.localStorage.setItem('currentTimeline', transpiledLine.targets.toString());
+      if (precompiledLineSource.targets !== undefined) {
+        window.localStorage.setItem('currentTimeline', precompiledLineSource.targets.toString());
         return {
-          timelineOptions: transpiledLine.options,
+          timelineOptions: precompiledLineSource.options,
         } as Types.Compile.CompiledTimeline;
       };
     case 'step':
       return {
-        targets: transpiledLine.targets,
-        type: transpiledLine.type,
-        vars: transpiledLine.options,
+        targets: precompiledLineSource.targets,
+        type: precompiledLineSource.type,
+        vars: precompiledLineSource.options,
       };
     default:
       return {
@@ -44,9 +44,9 @@ export const compileLine = (
   }
 };
 
-export const transpileLine = (lineData: Types.Parse.ScriptLineData): Types.Compile.TranspiledLine => {
+export const precompileLine = (lineData: Types.Parse.ScriptLineData): Types.Compile.PrecompiledLine => {
   return lineData.sections.reduce(
-      (transpiledLine: Types.Compile.TranspiledLine,
+      (transpiledLine: Types.Compile.PrecompiledLine,
           section: Types.Parse.LineSectionData,
       ) => {
         const type: string = section.sectionType;
@@ -55,7 +55,7 @@ export const transpileLine = (lineData: Types.Parse.ScriptLineData): Types.Compi
             transpiledLine[type] = section.source.split(',').map((target: string) => target.trim());
             break;
           case 'options':
-            transpiledLine[type].push(transpileOptions(section.source));
+            transpiledLine[type].push(translateOptions(section.source));
             break;
           case 'type':
             transpiledLine[type] = section.source;
@@ -70,10 +70,10 @@ export const transpileLine = (lineData: Types.Parse.ScriptLineData): Types.Compi
       });
 };
 
-export const transpileOptions = (sectionOptions: string): Types.Compile.TranspiledSectionOptions => {
+export const translateOptions = (sectionOptions: string): Types.Compile.TranslatedSectionOptions => {
   const splitOptions = sectionOptions.split(',');
   const transpiledOptions = splitOptions.reduce(
-      (transpiledOptions: Types.Compile.TranspiledSectionOptions,
+      (transpiledOptions: Types.Compile.TranslatedSectionOptions,
           optionSource: string,
       ) => {
         const [optionKey, optionValue] = optionSource.split('=');

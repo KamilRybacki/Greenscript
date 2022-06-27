@@ -2,22 +2,22 @@ import {gsap} from 'gsap';
 // @ts-ignore
 import {ScrollTrigger} from 'gsap/ScrollTrigger.js';
 
-import {parseGSAPScript} from '../translation/parse';
-import {compileGSAPScript} from '../translation/compile';
+import {parseGreenscript} from '../translation/parse';
+import {compileGreenscript} from '../translation/compile';
 
-import * as Types from '../types/';
+import * as Types from '../types';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const useGSAP = (inputScript: string) => {
-  const parsedScript = parseGSAPScript(inputScript);
-  const {animations, options} = compileGSAPScript(parsedScript);
+  const parsedScript = parseGreenscript(inputScript);
+  const {animations, options} = compileGreenscript(parsedScript);
   const currentTimeline = gsap.timeline(options);
   currentTimeline.addLabel('timelineID', Date.now().toString());
   const gsapInterface: Types.Hooks.AnimationsInterface = animations.reduce((
       output: Types.Hooks.AnimationsInterface,
-      step: Types.Compile.CompiledAnimation
-    ): Types.Hooks.AnimationsInterface => {
+      step: Types.Compile.CompiledAnimation,
+  ): Types.Hooks.AnimationsInterface => {
     if (step.targets) {
       output.steps.push(() => {
         const targetsList = prepareTargetsList(step.targets);
@@ -87,7 +87,6 @@ const prepareTargetsList = (targets: string[]) => {
         if (queryFromDOM) targetsList.push(queryFromDOM);
         return targetsList;
       }, []);
-  }
 };
 
 export default useGSAP;

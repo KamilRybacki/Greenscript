@@ -1,5 +1,5 @@
 {
-  "name": "solid-gsap-transpiler",
+  "name": "greenscript",
   "version": "0.0.1",
   "description": "Experimental module of scripting GSAP animations for use in SolidJS apps",
   "main": "src/index.ts",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KamilRybacki/solid-gsap-transpiler"
+    "url": "git+https://github.com/KamilRybacki/greenscript"
   },
   "keywords": [
     "tailwind",
@@ -19,9 +19,9 @@
   "author": "Kamil Rybacki",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/KamilRybacki/solid-gsap-transpiler/issues"
+    "url": "https://github.com/KamilRybacki/greenscript/issues"
   },
-  "homepage": "https://github.com/KamilRybacki/solid-gsap-transpiler#readme",
+  "homepage": "https://github.com/KamilRybacki/greenscript#readme",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@types/jest": "^27.5.1",

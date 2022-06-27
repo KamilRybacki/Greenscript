@@ -1,7 +1,7 @@
 import * as Types from '../types';
 import * as Utils from './utils';
 
-export const parseGSAPScript = (script: string): Types.Parse.ScriptLineData[] => {
+export const parseGreenscript = (script: string): Types.Parse.ScriptLineData[] => {
   return script
       .split('\n')
       .reduce((readLines: Types.Parse.ScriptLineData[], line: string) => {

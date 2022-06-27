@@ -30,8 +30,10 @@ export const optionsKeys: Types.Utils.OptionKeysMapping = {
   'r': 'step:rotate',
   'x': 'step:x',
   'y': 'step:y',
+  'e': 'step:ease',
   't': 'step:duration',
   'd': 'step:delay',
   'dd': 'defaults:delay',
+  'de': 'defaults:ease',
   'dt': 'defaults:duration',
 };

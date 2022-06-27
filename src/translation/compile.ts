@@ -6,14 +6,10 @@ export const compileGSAPScript = (script: Types.Parse.ScriptLineData[]) => {
       .map((line: Types.Parse.ScriptLineData) => compileLine(line))
       .reduce(
           (acc: Types.Compile.CompiledScript,
-              line: Types.Compile.CompiledLine,
+              line: Types.Compile.CompiledTimeline | Types.Compile.CompiledAnimation,
           ) => {
-            if (line.timelineOptions) {
-              acc.options = line.timelineOptions;
-            }
-            if (line.targets) {
-              acc.animations.push(line);
-            }
+            if ('timelineOptions' in line) acc.options = line.timelineOptions;
+            if ('vars' in line) acc.animations.push(line);
             return acc;
           }, {
             options: {},
@@ -23,7 +19,7 @@ export const compileGSAPScript = (script: Types.Parse.ScriptLineData[]) => {
 
 export const compileLine = (
     lineData: Types.Parse.ScriptLineData,
-): Types.Compile.CompiledLine => {
+): Types.Compile.CompiledTimeline | Types.Compile.CompiledAnimation => {
   const transpiledLine = transpileLine(lineData);
   switch (lineData.type) {
     case 'timeline':
@@ -31,7 +27,7 @@ export const compileLine = (
         window.localStorage.setItem('currentTimeline', transpiledLine.targets.toString());
         return {
           timelineOptions: transpiledLine.options,
-        };
+        } as Types.Compile.CompiledTimeline;
       };
     case 'step':
       return {
@@ -40,7 +36,11 @@ export const compileLine = (
         vars: transpiledLine.options,
       };
     default:
-      return {};
+      return {
+        targets: [],
+        type: '',
+        vars: {},
+      };
   }
 };
 
@@ -66,6 +66,7 @@ export const transpileLine = (lineData: Types.Parse.ScriptLineData): Types.Compi
       }, {
         targets: [],
         options: [],
+        type: '',
       });
 };
 

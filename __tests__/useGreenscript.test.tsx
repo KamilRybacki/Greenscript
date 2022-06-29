@@ -8,8 +8,14 @@ import useGreenscript from '../src/hooks/useGreenscript';
 
 import * as Mocks from '../__mocks__/useGreenscriptMocks';
 
+const greenscriptInterface = useGreenscript(Mocks.hookTestScript);
+
+const testComponentText = Date.now().toString();
+const testElementId = 'testElement';
+
+let testElement: HTMLElement;
+
 describe('Test useGreenscript output', () => {
-  const greenscriptInterface = useGreenscript(Mocks.hookTestScript);
   test('Check if valid Timeline object is returned', () => {
     const outputTimeline = greenscriptInterface.getTimeline();
     expect(outputTimeline).toBeInstanceOf(gsap.core.Timeline);
@@ -28,12 +34,6 @@ describe('Test useGreenscript output', () => {
 });
 
 describe('Test using popular libraries', () => {
-  const greenscriptInterface = useGreenscript(Mocks.hookTestScript);
-  const testComponentText = Date.now().toString();
-  const testElementId = 'testElement';
-
-  let testElement: HTMLElement;
-
   const renderElementWithLibrary = (renderFunction: CallableFunction, componentFunction: CallableFunction) => {
     renderFunction(componentFunction);
     const element = screen.getByTestId(testElementId);

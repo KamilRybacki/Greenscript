@@ -1,17 +1,12 @@
 import {gsap} from 'gsap';
 
 import {isListValid} from '../utils';
-
-import {compileAdditionalOptions} from '../translation/compile';
 import * as Types from '../types';
 
 const apply = (
     baseInterface: Types.Hooks.GreenscriptInterface,
     additionalOptions: Types.Upgrade.AdditionalOptions,
 ) : Types.Hooks.GreenscriptInterface => {
-  if (typeof additionalOptions === 'string') {
-    additionalOptions = compileAdditionalOptions(additionalOptions);
-  }
   if (isListValid([additionalOptions])) {
     const newInterface = {...baseInterface};
     if ('timeline' in additionalOptions && additionalOptions.timeline) {

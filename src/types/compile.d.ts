@@ -9,16 +9,18 @@ export type PrecompiledLine = {
 export type TranslatedSectionOptions = gsap.AnimationVars | gsap.TimelineVars;
 
 export type CompiledTimeline = {
-  timelineOptions: gsap.TimelineVars,
+  name: string,
+  timelineOptions: gsap.TimelineVars[],
 };
 
 export type CompiledAnimation = {
   targets: string[],
   type: string,
-  vars: gsap.AnimationVars,
+  vars: gsap.AnimationVars[],
 };
 
 export type CompiledScript = {
+  name: string,
   options: gsap.TimelineVars,
   animations: CompiledAnimation[],
 };

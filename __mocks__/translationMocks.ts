@@ -31,6 +31,7 @@ export const scripts = {
         options: [{opacity: '0.5', y: '-20', x: '2'}],
       },
       timeline: {
+        name: 'Test',
         timelineOptions: [{
           duration: '1',
           delay: '0.25',
@@ -64,6 +65,7 @@ export const scripts = {
     `,
     compiled: {
       script: {
+        name: 'Final',
         options: [{
           delay: '1.5',
           defaults: {delay: '0.25'},

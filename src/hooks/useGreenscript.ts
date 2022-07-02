@@ -9,26 +9,32 @@ import * as Types from '../types';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const useGSAP = (inputScript: string) => {
+const useGSAP = (inputScript: string): Types.Hooks.AnimationsInterface | null => {
   const parsedScript = parseGreenscript(inputScript);
-  const {animations, options} = compileGreenscript(parsedScript);
+  const {name, animations, options} = compileGreenscript(parsedScript);
+  if (Object.keys(options).length == 0) return null;
+
   const currentTimeline = gsap.timeline(options);
-  currentTimeline.addLabel('timelineID', Date.now().toString());
+  currentTimeline.greenscriptName = name;
   const gsapInterface: Types.Hooks.AnimationsInterface = animations.reduce((
       output: Types.Hooks.AnimationsInterface,
       step: Types.Compile.CompiledAnimation,
   ): Types.Hooks.AnimationsInterface => {
-    if (step.targets) {
-      output.steps.push(() => {
-        const targetsList = prepareTargetsList(step.targets);
-        if (targetsList) {
-          const handle = getGSAPHandle(currentTimeline, step.type);
-          targetsList.forEach((targetElement) => {
-            handle(targetElement, ...Object.values(step.vars));
-          });
-          return targetsList;
-        }
-      });
+    const timelinePrototype = Object.getPrototypeOf(currentTimeline);
+    const availableHandles = Object.keys(timelinePrototype);
+    if (availableHandles.includes(step.type)) {
+      if (step.targets) {
+        output.steps.push(() => {
+          const targetsList = prepareTargetsList(step.targets);
+          if (targetsList) {
+            const handle = getGSAPHandle(currentTimeline, step.type);
+            targetsList.forEach((targetElement) => {
+              handle(targetElement, ...Object.values(step.vars));
+            });
+            return targetsList;
+          }
+        });
+      }
     }
     return output;
   }, {
@@ -58,24 +64,19 @@ const useGSAP = (inputScript: string) => {
       }, {});
     },
   } as Types.Hooks.AnimationsInterface);
-  return gsapInterface;
+  return gsapInterface.steps.length ? gsapInterface : null;
 };
 
 const getGSAPHandle = (
     timeline: gsap.core.Timeline,
     type: string,
 ): CallableFunction => {
-  const timelinePrototype = Object.getPrototypeOf(timeline);
-  const availableHandles = Object.keys(timelinePrototype);
-  if (availableHandles.includes(type)) {
-    return (target: HTMLElement, vars: gsap.AnimationVars) => {
-      if (vars instanceof Array) {
-        return timeline[type](target, ...vars);
-      }
-      return timeline[type](target, vars);
-    };
-  }
-  return () => console.error(`Invalid animation type: ${type}`);
+  return (target: HTMLElement, vars: gsap.AnimationVars) => {
+    if (vars instanceof Array) {
+      return timeline[type](target, ...vars);
+    }
+    return timeline[type](target, vars);
+  };
 };
 
 const prepareTargetsList = (targets: string[]) => {

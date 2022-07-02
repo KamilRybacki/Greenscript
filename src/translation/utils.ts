@@ -37,3 +37,11 @@ export const optionsKeys: Types.Utils.OptionKeysMapping = {
   'de': 'defaults:ease',
   'dt': 'defaults:duration',
 };
+
+export const possibleErrors = [
+  'Failed to determine line type (timeline declaration or step declaration)',
+  'Encountered a problem while parsing timeline name',
+  'Encountered a problem while parsing timeline options',
+  'Encountered a problem while parsing animation step options',
+  'Encountered a problem while parsing animation step targets',
+];

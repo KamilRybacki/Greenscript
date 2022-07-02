@@ -9,7 +9,7 @@ import * as Types from '../types';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const useGSAP = (inputScript: string): Types.Hooks.AnimationsInterface | null => {
+const useGreenscript = (inputScript: string): Types.Hooks.AnimationsInterface | null => {
   const parsedScript = parseGreenscript(inputScript);
   const {name, animations, options} = compileGreenscript(parsedScript);
   if (Object.keys(options).length == 0) return null;
@@ -90,4 +90,4 @@ const prepareTargetsList = (targets: string[]) => {
       }, []);
 };
 
-export default useGSAP;
+export default useGreenscript;

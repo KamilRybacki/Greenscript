@@ -2,7 +2,7 @@ import {gsap} from 'gsap';
 
 import useGreenscript from '../src/hooks/useGreenscript';
 
-import * as Mocks from '../__mocks__/useGreenscriptMocks';
+import * as Mocks from '../__mocks__/greenscriptMocks';
 
 const greenscriptInterface = useGreenscript(Mocks.validHookTestScript);
 

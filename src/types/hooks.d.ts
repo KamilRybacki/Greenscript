@@ -1,5 +1,5 @@
 
-export type AnimationsInterface = {
+export type GreenscriptInterface = {
   steps: CallableFunction[],
   getTimeline: CallableFunction,
   setup: CallableFunction,

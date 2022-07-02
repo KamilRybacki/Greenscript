@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import * as Utils from './utils';
+import * as Utils from '../utils';
 
 export const parseGreenscript = (script: string): Types.Parse.ScriptLineData[] => {
   return script

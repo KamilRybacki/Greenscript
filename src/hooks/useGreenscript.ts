@@ -9,27 +9,33 @@ import * as Types from '../types';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const useGreenscript = (inputScript: string): Types.Hooks.AnimationsInterface | null => {
+const useGreenscript = (inputScript: string): Types.Hooks.GreenscriptInterface | undefined => {
   const parsedScript = parseGreenscript(inputScript);
   const {name, animations, options} = compileGreenscript(parsedScript);
-  if (Object.keys(options).length == 0) return null;
+  if (Object.keys(options).length == 0) return undefined;
 
   const currentTimeline = gsap.timeline(options);
   currentTimeline.greenscriptName = name;
-  const gsapInterface: Types.Hooks.AnimationsInterface = animations.reduce((
-      output: Types.Hooks.AnimationsInterface,
+  const gsapInterface: Types.Hooks.GreenscriptInterface = animations.reduce((
+      output: Types.Hooks.GreenscriptInterface,
       step: Types.Compile.CompiledAnimation,
-  ): Types.Hooks.AnimationsInterface => {
+  ): Types.Hooks.GreenscriptInterface => {
     const timelinePrototype = Object.getPrototypeOf(currentTimeline);
     const availableHandles = Object.keys(timelinePrototype);
     if (availableHandles.includes(step.type)) {
       if (step.targets) {
-        output.steps.push(() => {
+        output.steps.push((additionalVars?: gsap.TimelineVars[]) => {
           const targetsList = prepareTargetsList(step.targets);
           if (targetsList) {
             const handle = getGSAPHandle(currentTimeline, step.type);
             targetsList.forEach((targetElement) => {
-              handle(targetElement, ...Object.values(step.vars));
+              const animationStepVars: gsap.TimelineVars[] = step.vars;
+              if (additionalVars) {
+                additionalVars.forEach((additionalVarsSection: gsap.TimelineVars, sectionIndex: number) => {
+                  animationStepVars[sectionIndex] = {...animationStepVars[sectionIndex], ...additionalVarsSection};
+                });
+              }
+              handle(targetElement, ...animationStepVars);
             });
             return targetsList;
           }
@@ -63,8 +69,8 @@ const useGreenscript = (inputScript: string): Types.Hooks.AnimationsInterface | 
         return handlesResults;
       }, {});
     },
-  } as Types.Hooks.AnimationsInterface);
-  return gsapInterface.steps.length ? gsapInterface : null;
+  } as Types.Hooks.GreenscriptInterface);
+  return gsapInterface.steps.length ? gsapInterface : undefined;
 };
 
 const getGSAPHandle = (

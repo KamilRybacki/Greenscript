@@ -36,13 +36,13 @@ describe('Test useGreenscript output', () => {
   describe('Check for invalid inputs', () => {
     test('Check for empty script', () => {
       const emptyScriptInterface = useGreenscript('');
-      expect(emptyScriptInterface).toBeNull();
+      expect(emptyScriptInterface).toBeUndefined();
     });
     test('Check for script without timeline declaration', () => {
       const timelineDeclaration = '[HookTest](t=0.25,dt=0.1,de=linear)';
       const scriptWithTimelelineTrimmed = Mocks.validHookTestScript.replace(timelineDeclaration, '').trim();
       const interfaceWithoutTimeline = useGreenscript(scriptWithTimelelineTrimmed);
-      expect(interfaceWithoutTimeline).toBeNull();
+      expect(interfaceWithoutTimeline).toBeUndefined();
     });
     test('Check declaration for bogus GSAP handle', () => {
       const interfaceWithBogusHandle = useGreenscript(Mocks.bogusStepScript);
@@ -56,7 +56,7 @@ describe('Test useGreenscript output', () => {
           Object.keys(scriptsWithBlanksForDeclaration).forEach((scriptType: string) => {
             test(`Blank inserted in ${scriptType} field`, () => {
               const interfaceWithBlankField = useGreenscript(scriptsWithBlanksForDeclaration[scriptType]);
-              expect(interfaceWithBlankField).toBeNull();
+              expect(interfaceWithBlankField).toBeUndefined();
             });
           });
         });

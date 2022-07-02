@@ -39,15 +39,5 @@ export const scriptsWithBlanks = {
   },
 };
 
-export const generalCompiledStepCode = `
-() => {
-        const targetsList = prepareTargetsList(step.targets);
-        if (targetsList) {
-          const handle = getGSAPHandle(currentTimeline, step.type);
-          targetsList.forEach(targetElement => {
-            handle(targetElement, ...Object.values(step.vars));
-          });
-          return targetsList;
-        }
-      }
-`;
+// eslint-disable-next-line max-len
+export const generalCompiledStepCode = `additionalVars=>{consttargetsList=prepareTargetsList(step.targets);if(targetsList){consthandle=getGSAPHandle(currentTimeline,step.type);targetsList.forEach(targetElement=>{constanimationStepVars=step.vars;if(additionalVars){additionalVars.forEach((additionalVarsSection,sectionIndex)=>{animationStepVars[sectionIndex]={...animationStepVars[sectionIndex],...additionalVarsSection};});}handle(targetElement,...animationStepVars);});returntargetsList;}}`;

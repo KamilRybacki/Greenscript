@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import * as Utils from './utils';
+import * as Utils from '../utils';
 
 export const compileGreenscript = (script: Types.Parse.ScriptLineData[]): Types.Compile.CompiledScript => {
   const output = script
@@ -40,10 +40,10 @@ const isScriptLineValid = (line: Types.Compile.CompiledTimeline | Types.Compile.
   if ('type' in line && !line.type) errorCode = 1;
   if ('timelineOptions' in line) {
     if ('name' in line && !line.name) errorCode = 2;
-    if (!isListValid(line.timelineOptions)) errorCode = 3;
+    if (!Utils.isListValid(line.timelineOptions)) errorCode = 3;
   }
-  if ('vars' in line && !isListValid(line.vars)) errorCode = 4;
-  if ('targets' in line && !isListValid(line.targets)) errorCode = 5;
+  if ('vars' in line && !Utils.isListValid(line.vars)) errorCode = 4;
+  if ('targets' in line && !Utils.isListValid(line.targets)) errorCode = 5;
   return errorCode;
 };
 
@@ -111,15 +111,6 @@ const isPrecompiledLineValid = (line: Types.Compile.PrecompiledLine): boolean =>
   return true;
 };
 
-const isListValid = (list: Array<object | string>): boolean => {
-  if (list.length) {
-    return list.every((listElement: object | string) => {
-      if (typeof listElement === 'string') return Boolean(listElement.length);
-      return Boolean(Object.keys(listElement).length);
-    });
-  };
-  return false;
-};
 
 export const translateOptions = (sectionOptions: string): Types.Compile.TranslatedSectionOptions => {
   let transpiledOptions: Types.Compile.TranslatedSectionOptions = {};
@@ -151,4 +142,8 @@ export const translateOptions = (sectionOptions: string): Types.Compile.Translat
         }, {});
   }
   return transpiledOptions;
+};
+
+export const compileAdditionalOptions = (rawOptions: string): Types.Upgrade.AdditionalOptions => {
+  return rawOptions;
 };

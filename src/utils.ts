@@ -1,4 +1,14 @@
-import * as Types from '../types';
+import * as Types from './types';
+
+export const isListValid = (list: Array<object | string>): boolean => {
+  if (list.length) {
+    return list.every((listElement: object | string) => {
+      if (typeof listElement === 'string') return Boolean(listElement.length);
+      return Boolean(Object.keys(listElement).length);
+    });
+  };
+  return false;
+};
 
 export const linePrefixCharacters: Types.Utils.CharactersMapping = {
   '[': 'timeline',
@@ -45,3 +55,4 @@ export const possibleErrors = [
   'Encountered a problem while parsing animation step options',
   'Encountered a problem while parsing animation step targets',
 ];
+

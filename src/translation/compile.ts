@@ -144,6 +144,6 @@ export const translateOptions = (sectionOptions: string): Types.Compile.Translat
   return transpiledOptions;
 };
 
-export const compileAdditionalOptions = (rawOptions: string): Types.Upgrade.AdditionalOptions => {
+export const compileAdditionalOptions = (rawOptions: string) => {
   return rawOptions;
 };

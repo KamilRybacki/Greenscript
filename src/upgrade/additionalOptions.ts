@@ -7,7 +7,7 @@ import * as Types from '../types';
 
 const apply = (
     baseInterface: Types.Hooks.GreenscriptInterface,
-    additionalOptions: Types.Upgrade.AdditionalOptions | string,
+    additionalOptions: Types.Upgrade.AdditionalOptions,
 ) : Types.Hooks.GreenscriptInterface => {
   if (typeof additionalOptions === 'string') {
     additionalOptions = compileAdditionalOptions(additionalOptions);

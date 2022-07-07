@@ -1,6 +1,6 @@
 
 export const validHookTestScript = `
-  [HookTest](t=0.25,dt=0.1,de=linear)
+  [HookTest](t=0.25,d=0.5,dt=0.1,de=linear)
   >set[#testElement](o=0.75)
   >to[#testElement](o=0.25)
   >fromTo[#testElement](o=0.25)(o=0.5)

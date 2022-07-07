@@ -123,18 +123,19 @@ export const translateOptions = (sectionOptions: string): Types.Compile.Translat
           const [optionKey, optionValue] = optionSource.split('=');
           const mappedOptionKey = Utils.optionsKeys[optionKey.trim()];
           const [keyPrefix, actualKey] = mappedOptionKey.split(':');
+          const realOptionValue: number | string = isValueANumber(optionValue) ? parseFloat(optionValue) : optionValue;
           switch (keyPrefix) {
             case 'step':
-              transpiledOptions[actualKey] = optionValue;
+              transpiledOptions[actualKey] = realOptionValue;
               break;
             case 'timeline':
-              transpiledOptions[actualKey] = optionValue;
+              transpiledOptions[actualKey] = realOptionValue;
               break;
             case 'defaults':
               if (transpiledOptions.defaults === undefined) {
                 transpiledOptions.defaults = {};
               }
-              transpiledOptions.defaults[actualKey] = optionValue;
+              transpiledOptions.defaults[actualKey] = realOptionValue;
             default:
               break;
           }
@@ -144,6 +145,7 @@ export const translateOptions = (sectionOptions: string): Types.Compile.Translat
   return transpiledOptions;
 };
 
-export const compileAdditionalOptions = (rawOptions: string) => {
-  return rawOptions;
+const isValueANumber = (value: string) => {
+  return !isNaN(parseFloat(value)) && !isNaN(value as any - 0);
 };
+

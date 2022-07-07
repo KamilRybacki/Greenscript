@@ -1,4 +1,5 @@
 import {gsap} from 'gsap';
+import { isExportDeclaration } from 'typescript';
 
 import useGreenscript from '../src/hooks/useGreenscript';
 
@@ -19,7 +20,9 @@ describe('Test useGreenscript output', () => {
     test('Check if valid Timeline object is returned', () => {
       const outputTimeline: gsap.core.Timeline = greenscriptInterface.getTimeline();
       expect(outputTimeline).toBeInstanceOf(gsap.core.Timeline);
+      outputTimeline.play();
       expect(outputTimeline.greenscriptName).toBe('HookTest');
+      expect(outputTimeline.vars[0].delay).toBe(0.5);
     });
     test('Check if animation steps have been compiled', () => {
       expect(greenscriptInterface.steps).toBeTruthy();
@@ -39,7 +42,7 @@ describe('Test useGreenscript output', () => {
       expect(emptyScriptInterface).toBeUndefined();
     });
     test('Check for script without timeline declaration', () => {
-      const timelineDeclaration = '[HookTest](t=0.25,dt=0.1,de=linear)';
+      const timelineDeclaration = '[HookTest](t=0.25,d=0.5,dt=0.1,de=linear)';
       const scriptWithTimelelineTrimmed = Mocks.validHookTestScript.replace(timelineDeclaration, '').trim();
       const interfaceWithoutTimeline = useGreenscript(scriptWithTimelelineTrimmed);
       expect(interfaceWithoutTimeline).toBeUndefined();

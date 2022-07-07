@@ -23,7 +23,7 @@ export type AnimationStepAdditionalOptions = {
 } & TimingOptions;
 
 export type TimelineCallbackOptions = {
-  callbackFunction: CallableFunction,
+  callbackFunction: (...args: any[]) => void | null,
   callbackParams?: any[],
 };
 

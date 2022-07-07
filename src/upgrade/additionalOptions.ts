@@ -1,4 +1,5 @@
 import {gsap} from 'gsap';
+import {ScrollTrigger} from 'gsap/ScrollTrigger';
 
 import {isListValid} from '../utils';
 import * as Types from '../types';
@@ -10,10 +11,10 @@ const apply = (
   if (isListValid([additionalOptions])) {
     const newInterface = {...baseInterface};
     if ('timeline' in additionalOptions && additionalOptions.timeline) {
-      goThroughTimelineAdditionalOptions(additionalOptions.timeline, newInterface.getTimeline());
+      applyTimelineAdditionalOptions(additionalOptions.timeline, newInterface.timeline);
     }
     if ('steps' in additionalOptions && additionalOptions.steps) {
-      modifyChosenTimelineSteps(additionalOptions.steps, newInterface.steps);
+      applyStepsAdditionalOptions(additionalOptions.steps, newInterface.steps);
     }
     return newInterface;
   }
@@ -21,12 +22,12 @@ const apply = (
   return baseInterface;
 };
 
-const goThroughTimelineAdditionalOptions = (
+const applyTimelineAdditionalOptions = (
     timelineAdditionalOptions: Types.Upgrade.TimelineAdditionalOptions,
     timeline: gsap.core.Timeline,
 ) : void => {
   if ('scrollTrigger' in timelineAdditionalOptions) gsap.registerPlugin(ScrollTrigger);
-  const {callbacks, ...otherOptions} = timelineAdditionalOptions;
+  const {callbacks, scrollTrigger, ...otherOptions} = timelineAdditionalOptions;
   for (const callback in callbacks) {
     if (callbacks.hasOwnProperty(callback)) {
       const callbackOptions = callbacks[callback as keyof typeof callbacks];
@@ -36,6 +37,11 @@ const goThroughTimelineAdditionalOptions = (
       }
     }
   }
+  if (scrollTrigger) {
+    const spawnedScrollTrigger = ScrollTrigger.create(scrollTrigger);
+    // @ts-ignore
+    timeline.scrollTrigger = spawnedScrollTrigger;
+  };
   for (const option in otherOptions) {
     if (otherOptions.hasOwnProperty(option)) {
       timeline[option] = otherOptions[option as keyof typeof otherOptions];
@@ -43,7 +49,7 @@ const goThroughTimelineAdditionalOptions = (
   }
 };
 
-const modifyChosenTimelineSteps = (
+const applyStepsAdditionalOptions = (
     stepsToModify: Types.Upgrade.AnimationStepAdditionalOptions[], interfacedSteps: CallableFunction[],
 ) => {
   stepsToModify.forEach((stepToModify) => {

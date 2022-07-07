@@ -49,7 +49,7 @@ const useGreenscript = (inputScript: string): Types.Hooks.GreenscriptInterface |
       rawSource: inputScript,
       compiledSource: compiledScript,
       steps: [],
-      getTimeline: () => currentTimeline,
+      timeline: currentTimeline,
       setup: (
           targets: gsap.TweenTarget | Array<string>,
           vars: gsap.TweenVars,

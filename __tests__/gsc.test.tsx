@@ -17,7 +17,7 @@ describe('Test using Greenscript with template strings ONLY', () => {
       [GSCTest](t=2.0, d=1.0)
       >set[#testEelement](t=2.0, d=1.0)
     `;
-    const compiledValidInterfaceTimeline = greenscriptInterfaceFromValidLiteral.getTimeline();
+    const compiledValidInterfaceTimeline = greenscriptInterfaceFromValidLiteral.timeline;
 
     test('Check if timeline has been returned', () => {
       expect(greenscriptInterfaceFromValidLiteral).toBeTruthy();
@@ -40,35 +40,37 @@ describe('Test using Greenscript with template strings ONLY', () => {
 });
 
 describe('Test using Greenscript with template strings and additional options', () => {
-  describe('Test for valid script', () => {
-    const greenscriptInterfaceFromLiteralAndExtras = gsc({
-      timeline: {
-        repeat: -1,
-        yoyo: true,
-        callbacks: {
-          onComplete: {
-            callbackFunction: (firstParameter: string, secondParameter: string) => {
-              console.log(`Parameters:  ${firstParameter}, ${secondParameter}`);
-              console.log('[JEST] onComplete callback function called');
-            },
-            callbackParams: ['param1', 'param2'],
+  const additionalOptionsToTest = {
+    timeline: {
+      repeat: -1,
+      yoyo: true,
+      callbacks: {
+        onComplete: {
+          callbackFunction: (firstParameter: string, secondParameter: string) => {
+            console.log(`Parameters:  ${firstParameter}, ${secondParameter}`);
+            console.log('[JEST] onComplete callback function called');
           },
+          callbackParams: ['param1', 'param2'],
         },
       },
-      steps: [
-        {
-          stepIndex: 0,
-          data: {
-            testKey: 'testValue',
-          },
-          timeScale: 2.0,
+    },
+    steps: [
+      {
+        stepIndex: 0,
+        data: {
+          testKey: 'testValue',
         },
-      ],
-    })`
+        timeScale: 2.0,
+      },
+    ],
+  };
+
+  describe('Test for valid script', () => {
+    const greenscriptInterfaceFromLiteralAndExtras = gsc(additionalOptionsToTest)`
       [GSCTest](t=2.0, d=1.0)
       >set[#testEelement](t=2.0, d=1.0)
     `;
-    const compiledInterfaceAugumentedTimeline = greenscriptInterfaceFromLiteralAndExtras.getTimeline();
+    const compiledInterfaceAugumentedTimeline = greenscriptInterfaceFromLiteralAndExtras.timeline;
 
     test('Check if timeline has been returned', () => {
       expect(greenscriptInterfaceFromLiteralAndExtras).toBeTruthy();
@@ -86,9 +88,18 @@ describe('Test using Greenscript with template strings and additional options', 
     });
     test('Check if step has been modified', () => {
       const modifiedStep = greenscriptInterfaceFromLiteralAndExtras.steps[0];
-      const modifiedStepCode = modifiedStep.toString().replace(/\s/g, '');;
+      const modifiedStepCode = modifiedStep.toString().replace(/\s/g, ''); ;
       const expectedStepCode = Mocks.modifiedCompiledStepCode.replace(/\s/g, '');
       expect(modifiedStepCode).toBe(expectedStepCode);
+    });
+  });
+  describe('Test for invalid script', () => {
+    const greenscriptInterfaceFromInvalidLiteral = gsc(additionalOptionsToTest)`
+      [GSCTest]
+      >[#testEelement](t=2.0, d=1.0)
+    `;
+    test('Check if undefined interface is returned', () => {
+      expect(greenscriptInterfaceFromInvalidLiteral).toBeUndefined();
     });
   });
 });

@@ -18,7 +18,7 @@ describe('Test useGreenscript output', () => {
 
   describe('Check for valid input script', () => {
     test('Check if valid Timeline object is returned', () => {
-      const outputTimeline: gsap.core.Timeline = greenscriptInterface.getTimeline();
+      const outputTimeline: gsap.core.Timeline = greenscriptInterface.timeline;
       expect(outputTimeline).toBeInstanceOf(gsap.core.Timeline);
       outputTimeline.play();
       expect(outputTimeline.greenscriptName).toBe('HookTest');

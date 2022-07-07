@@ -7,7 +7,7 @@ export type AdditionalOptions = {
 
 export type TimelineAdditionalOptions = TimingOptions & {
   autoRemove?: boolean,
-  callbacks: {
+  callbacks?: {
     onComplete?: TimelineCallbackOptions,
     onStart?: TimelineCallbackOptions,
     onUpdate?: TimelineCallbackOptions,

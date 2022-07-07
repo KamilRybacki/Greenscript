@@ -2,6 +2,8 @@ import {gsap} from 'gsap';
 
 import gsc from '../src/hooks/gsc';
 
+import * as Mocks from '../__mocks__/greenscriptMocks';
+
 describe('Test using Greenscript with template strings ONLY', () => {
   beforeEach(() => {
     const redirectToNormalLog = (message) => {
@@ -53,6 +55,15 @@ describe('Test using Greenscript with template strings and additional options', 
           },
         },
       },
+      steps: [
+        {
+          stepIndex: 0,
+          data: {
+            testKey: 'testValue',
+          },
+          timeScale: 2.0,
+        },
+      ],
     })`
       [GSCTest](t=2.0, d=1.0)
       >set[#testEelement](t=2.0, d=1.0)
@@ -72,6 +83,12 @@ describe('Test using Greenscript with template strings and additional options', 
       expect(compiledInterfaceAugumentedTimeline.yoyo).toBe(true);
       expect(compiledInterfaceAugumentedTimeline.vars.onComplete).toBeInstanceOf(Function);
       expect(compiledInterfaceAugumentedTimeline.vars.onCompleteParams).toEqual(['param1', 'param2']);
+    });
+    test('Check if step has been modified', () => {
+      const modifiedStep = greenscriptInterfaceFromLiteralAndExtras.steps[0];
+      const modifiedStepCode = modifiedStep.toString().replace(/\s/g, '');;
+      const expectedStepCode = Mocks.modifiedCompiledStepCode.replace(/\s/g, '');
+      expect(modifiedStepCode).toBe(expectedStepCode);
     });
   });
 });

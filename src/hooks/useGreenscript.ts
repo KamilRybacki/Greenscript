@@ -6,7 +6,6 @@ import {parseGreenscript} from '../translation/parse';
 import {compileGreenscript} from '../translation/compile';
 
 import * as Types from '../types';
-import {CoreTransformationContext} from 'typescript';
 
 gsap.registerPlugin(ScrollTrigger);
 

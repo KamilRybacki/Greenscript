@@ -1,14 +1,16 @@
-
 import {gsap} from 'gsap';
 
 import gsc from '../src/hooks/gsc';
 
+import * as Mocks from '../__mocks__/greenscriptMocks';
+
 describe('Test adding ScrollTrigger to Greenscript', () => {
+  const triggerElement = document.createElement('div');
   const testElement = document.createElement('div');
-  const stepDummyElement = document.createElement('p');
+  testElement.id = 'testElement';
 
   const testScrollTrigger = {
-    trigger: testElement,
+    trigger: triggerElement,
     start: 'bottom top',
     end: 'bottom bottom',
     scrub: 1,
@@ -21,23 +23,16 @@ describe('Test adding ScrollTrigger to Greenscript', () => {
     delay: 0.5,
     scrollTrigger: testScrollTrigger,
   });
-  const stepWithScrollTriggerFromGSAP = gsap.to(
-      stepDummyElement, {
-        opacity: 0.5,
-        scrollTrigger: testScrollTrigger,
-      },
-  );
 
   describe('Check if passing ScrollTrigger works using additional options', () => {
     test('Test prepared mock HTML elements and GSAP objects', () => {
-      [testElement, timelineCreatedWithGSAP, stepWithScrollTriggerFromGSAP]
+      [triggerElement, timelineCreatedWithGSAP]
           .forEach((element) => expect(element).toBeTruthy());
 
-      expect(testElement).toBeInstanceOf(HTMLDivElement);
+      expect(triggerElement).toBeInstanceOf(HTMLDivElement);
       expect(timelineCreatedWithGSAP).toBeInstanceOf(gsap.core.Timeline);
-      expect(stepWithScrollTriggerFromGSAP).toBeInstanceOf(gsap.core.Tween);
 
-      [timelineCreatedWithGSAP, stepWithScrollTriggerFromGSAP]
+      [timelineCreatedWithGSAP]
           .forEach(({vars}) => expect(Object.keys(vars)).toContain('scrollTrigger'));
     });
     test('ScrollTrigger for timeline', () => {
@@ -47,7 +42,7 @@ describe('Test adding ScrollTrigger to Greenscript', () => {
         },
       })`
           [ScrollTriggerTest](d=2.0)
-          >fromTo[#anotherTestElement](o=0.25)(o=0.5)
+          >to[#testElement](o=0.5)
       `;
 
       const timelineFromInterface = interfaceWithScrollTriggerForTimeline.timeline;
@@ -63,9 +58,11 @@ describe('Test adding ScrollTrigger to Greenscript', () => {
         }],
       })`
           [ScrollTriggerTest](d=2.0)
-          >fromTo[#anotherTestElement](o=0.25)(o=0.5)
+          >to[#testElement](o=0.5)
       `;
       const modifiedStep = interfaceWithScrollTriggerForStep.steps[0];
+      const modifiedStepCode = modifiedStep.toString().replace(/\s/g, '');
+      expect(modifiedStepCode).toBe(Mocks.modifiedCompiledStepCode.replace(/\s/g, ''));
     });
   });
 });

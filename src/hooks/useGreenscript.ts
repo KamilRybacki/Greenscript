@@ -6,6 +6,7 @@ import {parseGreenscript} from '../translation/parse';
 import {compileGreenscript} from '../translation/compile';
 
 import * as Types from '../types';
+import {CoreTransformationContext} from 'typescript';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,21 +27,26 @@ const useGreenscript = (inputScript: string): Types.Hooks.GreenscriptInterface |
       const availableHandles = Object.keys(timelinePrototype);
       if (availableHandles.includes(step.type)) {
         if (step.targets) {
-          output.steps.push((additionalVars?: gsap.TimelineVars[]) => {
+          output.steps.push((
+              additionalVars?: gsap.TimelineVars[],
+          ): gsap.core.Tween | undefined => {
             const targetsList = prepareTargetsList(step.targets);
-            if (targetsList) {
+            let lastTween: gsap.core.Tween | undefined = undefined;
+
+            if (targetsList.length > 0) {
               const handle = getGSAPHandle(currentTimeline, step.type);
               targetsList.forEach((targetElement) => {
                 const animationStepVars: gsap.TimelineVars[] = step.vars;
+
                 if (additionalVars) {
                   additionalVars.forEach((additionalVarsSection: gsap.TimelineVars, sectionIndex: number) => {
                     animationStepVars[sectionIndex] = {...animationStepVars[sectionIndex], ...additionalVarsSection};
                   });
                 }
-                handle(targetElement, ...animationStepVars);
+                lastTween = handle(targetElement, ...animationStepVars);
               });
-              return targetsList;
             }
+            return lastTween;
           });
         }
       }

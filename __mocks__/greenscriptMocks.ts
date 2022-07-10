@@ -40,6 +40,6 @@ export const scriptsWithBlanks = {
 };
 
 // eslint-disable-next-line max-len
-export const generalCompiledStepCode = 'additionalVars=>{consttargetsList=prepareTargetsList(step.targets);if(targetsList){consthandle=getGSAPHandle(currentTimeline,step.type);targetsList.forEach(targetElement=>{constanimationStepVars=step.vars;if(additionalVars){additionalVars.forEach((additionalVarsSection,sectionIndex)=>{animationStepVars[sectionIndex]={...animationStepVars[sectionIndex],...additionalVarsSection};});}handle(targetElement,...animationStepVars);});returntargetsList;}}';
+export const generalCompiledStepCode = 'additionalVars=>{consttargetsList=prepareTargetsList(step.targets);letlastTween=undefined;if(targetsList.length>0){consthandle=getGSAPHandle(currentTimeline,step.type);targetsList.forEach(targetElement=>{constanimationStepVars=step.vars;if(additionalVars){additionalVars.forEach((additionalVarsSection,sectionIndex)=>{animationStepVars[sectionIndex]={...animationStepVars[sectionIndex],...additionalVarsSection};});}lastTween=handle(targetElement,...animationStepVars);});}returnlastTween;}';
 
-export const modifiedCompiledStepCode = '()=>{interfacedSteps[stepIndex](otherStepAdditionalVars);}';
+export const modifiedCompiledStepCode = '()=>{returnclonedStepFunction(otherStepAdditionalVars);}';

@@ -18,7 +18,7 @@ const apply = (
     }
     return newInterface;
   }
-  console.warn('Additional options dictionary is not valid. Returning original interface');
+  if (additionalOptions !== {}) console.warn('Additional options are not valid. Returning original interface');
   return baseInterface;
 };
 
@@ -54,8 +54,9 @@ const applyStepsAdditionalOptions = (
 ) => {
   stepsToModify.forEach((stepToModify) => {
     const {stepIndex, ...otherStepAdditionalVars} = stepToModify;
+    const clonedStepFunction = interfacedSteps[stepIndex].bind({});
     interfacedSteps[stepIndex] = () => {
-      interfacedSteps[stepIndex](otherStepAdditionalVars);
+      return clonedStepFunction(otherStepAdditionalVars);
     };
   });
 };
